@@ -5,6 +5,69 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+type DateInput = Date | string | number | null | undefined;
+
+const pad2 = (value: number) => String(value).padStart(2, "0");
+
+const parseDateInput = (value: DateInput): Date | null => {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
+export const formatIsoDate = (value: DateInput, fallback = "N/A") => {
+  const date = parseDateInput(value);
+  if (!date) return fallback;
+
+  return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(
+    date.getDate()
+  )}`;
+};
+
+export const formatIsoTime = (
+  value: DateInput,
+  includeSeconds = true,
+  fallback = "N/A"
+) => {
+  const date = parseDateInput(value);
+  if (!date) return fallback;
+
+  const time = `${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
+  return includeSeconds ? `${time}:${pad2(date.getSeconds())}` : time;
+};
+
+export const formatIsoDateTime = (
+  value: DateInput,
+  includeSeconds = true,
+  fallback = "N/A"
+) => {
+  const datePart = formatIsoDate(value, fallback);
+  const timePart = formatIsoTime(value, includeSeconds, fallback);
+
+  if (datePart === fallback || timePart === fallback) {
+    return fallback;
+  }
+
+  return `${datePart} ${timePart}`;
+};
+
+export const formatIsoMonthDayTime = (
+  value: DateInput,
+  includeSeconds = false,
+  fallback = "N/A"
+) => {
+  const date = parseDateInput(value);
+  if (!date) return fallback;
+
+  const datePart = `${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+  const timePart = formatIsoTime(date, includeSeconds, fallback);
+
+  return timePart === fallback ? fallback : `${datePart} ${timePart}`;
+};
+
 // Helper function to format bytes
 export const formatBytes = (bytes: number, isSpeed = false, decimals = 2) => {
   if (bytes === 0) return isSpeed ? "0 B/s" : "0 B";

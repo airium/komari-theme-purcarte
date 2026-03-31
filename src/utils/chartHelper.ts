@@ -1,4 +1,5 @@
 import type { PingTask } from "@/types/node";
+import { formatIsoMonthDayTime, formatIsoTime } from "./formatHelper";
 
 /**
  * 根据任务名称和任务列表生成颜色
@@ -38,20 +39,10 @@ export const generateColor = (taskName: string, sortedTasks: PingTask[]) => {
  * @returns 格式化后的时间字符串
  */
 export const lableFormatter = (value: any, hours: number) => {
-  const date = new Date(value);
   if (hours === 0) {
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
+    return formatIsoTime(value, true, "");
   }
-  return date.toLocaleString([], {
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  return formatIsoMonthDayTime(value, false, "");
 };
 
 /**
@@ -68,10 +59,7 @@ export const loadChartTimeFormatter = (
 ) => {
   if (dataLength === 0) return "";
   if (index === 0 || index === dataLength - 1) {
-    return new Date(value).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    return formatIsoTime(value, false, "");
   }
   return "";
 };

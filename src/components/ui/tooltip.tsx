@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { formatIsoDateTime } from "@/utils";
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -15,16 +16,10 @@ export const CustomTooltip = ({
   chartConfig,
   labelFormatter,
 }: CustomTooltipProps) => {
-  const defaultLabelFormatter = useCallback((value: any) => {
-    const date = new Date(value);
-    return date.toLocaleString([], {
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-  }, []);
+  const defaultLabelFormatter = useCallback(
+    (value: any) => formatIsoDateTime(value, true, "-"),
+    []
+  );
 
   if (active && payload && payload.length) {
     return (

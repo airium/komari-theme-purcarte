@@ -1,7 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { NodeData } from "@/types/node";
 import { memo, useMemo, type ReactNode } from "react";
-import { formatBytes, formatUptime, formatTrafficLimit } from "@/utils";
+import {
+  formatBytes,
+  formatIsoDateTime,
+  formatUptime,
+  formatTrafficLimit,
+} from "@/utils";
 import { CircleProgress } from "@/components/ui/progress-circle";
 import { useNodeCommons } from "@/hooks/useNodeCommons";
 import { useLiveData } from "@/contexts/LiveDataContext";
@@ -148,7 +153,7 @@ const Instance = memo(({ node }: InstanceProps) => {
           label={t("instancePage.lastUpdated")}
           value={
             stats && isOnline
-              ? new Date(stats.time).toLocaleString()
+              ? formatIsoDateTime(stats.time)
               : t("node.notAvailable")
           }
         />

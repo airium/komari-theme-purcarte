@@ -415,22 +415,7 @@ const PingChart = memo(({ node, hours }: PingChartProps) => {
                   type="number"
                   dataKey="time"
                   domain={timeRange || ["dataMin", "dataMax"]}
-                  tickFormatter={(time) => {
-                    const date = new Date(time);
-                    if (hours === 0) {
-                      return date.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                      });
-                    }
-                    return date.toLocaleString([], {
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    });
-                  }}
+                  tickFormatter={(time) => lableFormatter(time, hours)}
                   tick={{ fill: "var(--theme-text-muted-color)" }}
                   axisLine={{
                     stroke: "var(--theme-line-muted-color)",
@@ -482,22 +467,7 @@ const PingChart = memo(({ node, hours }: PingChartProps) => {
                   height={30}
                   stroke="var(--theme-text-muted-color)"
                   fill="var(--accent-a4)"
-                  tickFormatter={(time) => {
-                    const date = new Date(time);
-                    if (hours === 0) {
-                      return date.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                      });
-                    }
-                    return date.toLocaleDateString([], {
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    });
-                  }}
+                  tickFormatter={(time) => lableFormatter(time, hours)}
                   onChange={(e: any) => {
                     if (
                       e.startIndex !== undefined &&
