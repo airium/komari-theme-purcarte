@@ -6,6 +6,14 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 type DateInput = Date | string | number | null | undefined;
+type RGB = [number, number, number];
+
+const NETWORK_SPEED_COLOR_STOPS: Array<{ mbps: number; color: RGB }> = [
+  { mbps: 0, color: [255, 255, 255] },
+  { mbps: 1, color: [34, 197, 94] },
+  { mbps: 100, color: [250, 204, 21] },
+  { mbps: 10000, color: [239, 68, 68] },
+];
 
 const pad2 = (value: number) => String(value).padStart(2, "0");
 
@@ -105,17 +113,88 @@ export const formatLoadValue = (
   return formatSignificantDigits(value, significantDigits, fallback);
 };
 
+export const bytesPerSecondToMbps = (bytesPerSecond: number) =>
+  (bytesPerSecond * 8) / 1_000_000;
+
+export const formatNetworkSpeedMbps = (
+  bytesPerSecond: number,
+  significantDigits = 3,
+  fallback = "N/A"
+) => {
+  if (!Number.isFinite(bytesPerSecond)) return fallback;
+
+  const mbps = bytesPerSecondToMbps(bytesPerSecond);
+  const formatted = formatSignificantDigits(mbps, significantDigits, fallback);
+  return formatted === fallback ? fallback : `${formatted} Mbps`;
+};
+
+const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
+
+const mixColor = (from: RGB, to: RGB, ratio: number): RGB => {
+  const t = clamp01(ratio);
+  return [
+    Math.round(from[0] + (to[0] - from[0]) * t),
+    Math.round(from[1] + (to[1] - from[1]) * t),
+    Math.round(from[2] + (to[2] - from[2]) * t),
+  ];
+};
+
+const rgbToCss = ([r, g, b]: RGB) => `rgb(${r} ${g} ${b})`;
+
+export const getNetworkSpeedColor = (bytesPerSecond: number) => {
+  if (!Number.isFinite(bytesPerSecond) || bytesPerSecond <= 0) {
+    return rgbToCss(NETWORK_SPEED_COLOR_STOPS[0].color);
+  }
+
+  const mbps = bytesPerSecondToMbps(bytesPerSecond);
+  if (mbps <= 1) {
+    return rgbToCss(
+      mixColor(
+        NETWORK_SPEED_COLOR_STOPS[0].color,
+        NETWORK_SPEED_COLOR_STOPS[1].color,
+        mbps
+      )
+    );
+  }
+
+  if (mbps <= 100) {
+    const ratio = Math.log10(mbps) / 2;
+    return rgbToCss(
+      mixColor(
+        NETWORK_SPEED_COLOR_STOPS[1].color,
+        NETWORK_SPEED_COLOR_STOPS[2].color,
+        ratio
+      )
+    );
+  }
+
+  if (mbps <= 10000) {
+    const ratio = (Math.log10(mbps) - 2) / 2;
+    return rgbToCss(
+      mixColor(
+        NETWORK_SPEED_COLOR_STOPS[2].color,
+        NETWORK_SPEED_COLOR_STOPS[3].color,
+        ratio
+      )
+    );
+  }
+
+  return rgbToCss(NETWORK_SPEED_COLOR_STOPS[3].color);
+};
+
 // Helper function to format bytes
 export const formatBytes = (
   bytes: number,
   isSpeed = false,
   significantDigits = 3
 ) => {
-  if (bytes === 0) return isSpeed ? "0 B/s" : "0 B";
+  if (isSpeed) {
+    return formatNetworkSpeedMbps(bytes, significantDigits);
+  }
+  if (bytes === 0) return "0 B";
+
   const k = 1024;
-  const sizes = isSpeed
-    ? ["B/s", "KB/s", "MB/s", "GB/s", "TB/s"]
-    : ["B", "KB", "MB", "GB", "TB", "PB", "EB"];
+  const sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB"];
 
   let i = Math.floor(Math.log(bytes) / Math.log(k));
   let value = bytes / Math.pow(k, i);

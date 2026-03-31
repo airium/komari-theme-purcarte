@@ -1,9 +1,11 @@
 import {
   cn,
   formatBytes,
+  formatNetworkSpeedMbps,
   formatPercentage,
   formatTrafficLimit,
   formatUptime,
+  getNetworkSpeedColor,
 } from "@/utils";
 import type { NodeData } from "@/types/node";
 import { Link } from "react-router-dom";
@@ -235,12 +237,26 @@ const NodeTableRow = ({
         </div>
         <div className="col-span-1 text-left">
           <div>
-            {t("node.uploadPrefix")}{" "}
-            {stats ? formatBytes(stats.net_out, true) : t("node.notAvailable")}
+            {stats ? (
+              <span style={{ color: getNetworkSpeedColor(stats.net_out) }}>
+                {`${t("node.uploadPrefix")} ${formatNetworkSpeedMbps(
+                  stats.net_out
+                )}`}
+              </span>
+            ) : (
+              t("node.notAvailable")
+            )}
           </div>
           <div>
-            {t("node.downloadPrefix")}{" "}
-            {stats ? formatBytes(stats.net_in, true) : t("node.notAvailable")}
+            {stats ? (
+              <span style={{ color: getNetworkSpeedColor(stats.net_in) }}>
+                {`${t("node.downloadPrefix")} ${formatNetworkSpeedMbps(
+                  stats.net_in
+                )}`}
+              </span>
+            ) : (
+              t("node.notAvailable")
+            )}
           </div>
         </div>
         <div className="col-span-1 text-left">

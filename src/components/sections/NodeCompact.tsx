@@ -1,5 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatBytes, formatPercentage, formatUptime, getOSImage } from "@/utils";
+import {
+  formatBytes,
+  formatNetworkSpeedMbps,
+  formatPercentage,
+  formatUptime,
+  getNetworkSpeedColor,
+  getOSImage,
+} from "@/utils";
 import type { NodeData } from "@/types/node";
 import { Link } from "react-router-dom";
 import {
@@ -107,16 +114,26 @@ export const NodeCompact = ({ node, onShowDetails }: NodeCompactProps) => {
             <GaugeIcon className="size-5 text-(--accent-11) mr-2" />
             <div>
               <div>
-                {t("node.uploadPrefix")}{" "}
-                {stats
-                  ? formatBytes(stats.net_out, true)
-                  : t("node.notAvailable")}
+                {stats ? (
+                  <span style={{ color: getNetworkSpeedColor(stats.net_out) }}>
+                    {`${t("node.uploadPrefix")} ${formatNetworkSpeedMbps(
+                      stats.net_out
+                    )}`}
+                  </span>
+                ) : (
+                  t("node.notAvailable")
+                )}
               </div>
               <div>
-                {t("node.downloadPrefix")}{" "}
-                {stats
-                  ? formatBytes(stats.net_in, true)
-                  : t("node.notAvailable")}
+                {stats ? (
+                  <span style={{ color: getNetworkSpeedColor(stats.net_in) }}>
+                    {`${t("node.downloadPrefix")} ${formatNetworkSpeedMbps(
+                      stats.net_in
+                    )}`}
+                  </span>
+                ) : (
+                  t("node.notAvailable")
+                )}
               </div>
             </div>
           </div>
@@ -124,13 +141,13 @@ export const NodeCompact = ({ node, onShowDetails }: NodeCompactProps) => {
             <ArrowUpDownIcon className="size-5 text-(--accent-11) mr-2" />
             <div>
               <div>
-                {t("node.uploadPrefix")}{" "}
+                {t("node.uploadPrefix")} {" "}
                 {stats
                   ? formatBytes(stats.net_total_up)
                   : t("node.notAvailable")}
               </div>
               <div>
-                {t("node.downloadPrefix")}{" "}
+                {t("node.downloadPrefix")} {" "}
                 {stats
                   ? formatBytes(stats.net_total_down)
                   : t("node.notAvailable")}

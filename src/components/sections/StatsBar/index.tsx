@@ -1,5 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
-import { cn, formatBytes } from "@/utils";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  cn,
+  formatBytes,
+  formatNetworkSpeedMbps,
+  getNetworkSpeedColor,
+} from "@/utils";
 import { useAppConfig } from "@/config";
 import { useIsMobile } from "@/hooks/useMobile";
 import { CurrentTimeChip, StatChip } from "./StatChips";
@@ -14,7 +19,7 @@ export type { StatsBarProps };
 interface StatEntry {
   key: string;
   label: string;
-  lines: string[];
+  lines: ReactNode[];
   isLabelVertical?: boolean;
   textLeft?: boolean;
 }
@@ -109,6 +114,8 @@ export const StatsBar = (props: StatsBarProps) => {
       });
     }
     if (displayOptions.networkSpeed) {
+      const upColor = getNetworkSpeedColor(stats.currentSpeedUp);
+      const downColor = getNetworkSpeedColor(stats.currentSpeedDown);
       entries.push({
         key: "networkSpeed",
         label: getLabel(
@@ -118,12 +125,16 @@ export const StatsBar = (props: StatsBarProps) => {
         lines: loading
           ? ["..."]
           : [
-              `${t("node.uploadPrefix")} ${formatBytes(
-                stats.currentSpeedUp
-              )}/s`,
-              `${t("node.downloadPrefix")} ${formatBytes(
-                stats.currentSpeedDown
-              )}/s`,
+              <span style={{ color: upColor }}>
+                {`${t("node.uploadPrefix")} ${formatNetworkSpeedMbps(
+                  stats.currentSpeedUp
+                )}`}
+              </span>,
+              <span style={{ color: downColor }}>
+                {`${t("node.downloadPrefix")} ${formatNetworkSpeedMbps(
+                  stats.currentSpeedDown
+                )}`}
+              </span>,
             ],
         isLabelVertical: !isMobile && isShowStatsInHeader,
         textLeft: true,

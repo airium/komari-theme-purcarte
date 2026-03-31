@@ -12,7 +12,12 @@ import {
 import { ChartContainer } from "@/components/ui/chart";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import type { NodeData } from "@/types/node";
-import { formatBytes, formatPercentage } from "@/utils";
+import {
+  formatBytes,
+  formatNetworkSpeedMbps,
+  formatPercentage,
+  getNetworkSpeedColor,
+} from "@/utils";
 import { Flex } from "@radix-ui/themes";
 import Loading from "@/components/loading";
 import { useLoadCharts } from "@/hooks/useLoadCharts";
@@ -130,35 +135,35 @@ const LoadCharts = memo(
         title: t("chart.network"),
         type: "line",
         value: (
-          <>
-            <Flex gap="0" align="end" direction="column">
-              <span>
-                {t("node.uploadPrefix")}{" "}
-                {formatBytes(liveData?.net_out || 0, true)}
-              </span>
-              <span>
-                {t("node.downloadPrefix")}{" "}
-                {formatBytes(liveData?.net_in || 0, true)}
-              </span>
-            </Flex>
-          </>
+          <Flex gap="0" align="end" direction="column">
+            <span style={{ color: getNetworkSpeedColor(liveData?.net_out || 0) }}>
+              {`${t("node.uploadPrefix")} ${formatNetworkSpeedMbps(
+                liveData?.net_out || 0
+              )}`}
+            </span>
+            <span style={{ color: getNetworkSpeedColor(liveData?.net_in || 0) }}>
+              {`${t("node.downloadPrefix")} ${formatNetworkSpeedMbps(
+                liveData?.net_in || 0
+              )}`}
+            </span>
+          </Flex>
         ),
         series: [
           {
             dataKey: "net_in",
             color: colors[0],
             tooltipLabel: t("chart.download"),
-            tooltipFormatter: (value: number) => `${formatBytes(value, true)}`,
+            tooltipFormatter: (value: number) => formatNetworkSpeedMbps(value),
           },
           {
             dataKey: "net_out",
             color: colors[3],
             tooltipLabel: t("chart.upload"),
-            tooltipFormatter: (value: number) => `${formatBytes(value, true)}`,
+            tooltipFormatter: (value: number) => formatNetworkSpeedMbps(value),
           },
         ],
         yAxisFormatter: (value: number, index: number) =>
-          index !== 0 ? formatBytes(value) : "",
+          index !== 0 ? formatNetworkSpeedMbps(value) : "",
         data: chartData,
       },
       {

@@ -5,8 +5,10 @@ import {
   formatBytes,
   formatIsoDateTime,
   formatLoadValue,
+  formatNetworkSpeedMbps,
   formatUptime,
   formatTrafficLimit,
+  getNetworkSpeedColor,
 } from "@/utils";
 import { CircleProgress } from "@/components/ui/progress-circle";
 import { useNodeCommons } from "@/hooks/useNodeCommons";
@@ -93,13 +95,21 @@ const Instance = memo(({ node }: InstanceProps) => {
           label={t("instancePage.realtimeNetwork")}
           value={
             stats && isOnline
-              ? `${t("node.uploadPrefix")} ${formatBytes(
-                  stats.net_out,
-                  true
-                )} ${t("node.downloadPrefix")} ${formatBytes(
-                  stats.net_in,
-                  true
-                )}`
+              ? (
+                  <span>
+                    <span style={{ color: getNetworkSpeedColor(stats.net_out) }}>
+                      {`${t("node.uploadPrefix")} ${formatNetworkSpeedMbps(
+                        stats.net_out
+                      )}`}
+                    </span>
+                    {" "}
+                    <span style={{ color: getNetworkSpeedColor(stats.net_in) }}>
+                      {`${t("node.downloadPrefix")} ${formatNetworkSpeedMbps(
+                        stats.net_in
+                      )}`}
+                    </span>
+                  </span>
+                )
               : t("node.notAvailable")
           }
         />

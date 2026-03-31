@@ -1,8 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   formatBytes,
+  formatNetworkSpeedMbps,
   formatPercentage,
   formatUptime,
+  getNetworkSpeedColor,
   getOSImage,
   formatTrafficLimit,
 } from "@/utils";
@@ -247,14 +249,26 @@ export const NodeGrid = ({
           <span>{t("node.network")}</span>
           <div>
             <span>
-              {t("node.uploadPrefix")}{" "}
-              {stats
-                ? formatBytes(stats.net_out, true)
-                : t("node.notAvailable")}
+              {stats ? (
+                <span style={{ color: getNetworkSpeedColor(stats.net_out) }}>
+                  {`${t("node.uploadPrefix")} ${formatNetworkSpeedMbps(
+                    stats.net_out
+                  )}`}
+                </span>
+              ) : (
+                t("node.notAvailable")
+              )}
             </span>
             <span className="ml-2">
-              {t("node.downloadPrefix")}{" "}
-              {stats ? formatBytes(stats.net_in, true) : t("node.notAvailable")}
+              {stats ? (
+                <span style={{ color: getNetworkSpeedColor(stats.net_in) }}>
+                  {`${t("node.downloadPrefix")} ${formatNetworkSpeedMbps(
+                    stats.net_in
+                  )}`}
+                </span>
+              ) : (
+                t("node.notAvailable")
+              )}
             </span>
           </div>
         </div>
