@@ -79,9 +79,7 @@ const HomePage: React.FC<HomePageProps> = ({
       return (
         <NodeTable
           nodes={filteredNodes}
-          enableSwap={enableSwap}
           enableListItemProgressBar={enableListItemProgressBar}
-          selectTrafficProgressStyle={selectTrafficProgressStyle}
         />
       );
     }
