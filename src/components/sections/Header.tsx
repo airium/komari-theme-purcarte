@@ -2,9 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Search,
-  Grid3X3,
-  Table2,
-  Rows3,
   Moon,
   Sun,
   SunMoon,
@@ -41,40 +38,10 @@ interface HeaderProps extends Partial<StatsBarProps> {
   isSettingsOpen?: boolean;
 }
 
-const ViewModeIcons = {
-  grid: Grid3X3,
-  compact: Rows3,
-  table: Table2,
-};
-
 const ThemeIcons = {
   light: Sun,
   dark: Moon,
   system: SunMoon,
-};
-
-const ViewMenuItems = ({
-  setViewMode,
-}: {
-  setViewMode: (mode: "grid" | "compact" | "table") => void;
-}) => {
-  const { t } = useLocale();
-  return (
-    <>
-      <DropdownMenuItem onClick={() => setViewMode("grid")}>
-        <Grid3X3 className="size-4 mr-2 text-primary" />
-        <span>{t("header.grid")}</span>
-      </DropdownMenuItem>
-      <DropdownMenuItem onClick={() => setViewMode("compact")}>
-        <Rows3 className="size-4 mr-2 text-primary" />
-        <span>{t("header.compact")}</span>
-      </DropdownMenuItem>
-      <DropdownMenuItem onClick={() => setViewMode("table")}>
-        <Table2 className="size-4 mr-2 text-primary" />
-        <span>{t("header.table")}</span>
-      </DropdownMenuItem>
-    </>
-  );
 };
 
 const ThemeMenuItems = ({
@@ -98,41 +65,6 @@ const ThemeMenuItems = ({
         <span>{t("header.systemMode")}</span>
       </DropdownMenuItem>
     </>
-  );
-};
-
-const ViewModeSwitcher = ({ isMobile }: { isMobile?: boolean }) => {
-  const { viewMode, setViewMode } = useTheme();
-  const { t } = useLocale();
-  const Icon = ViewModeIcons[viewMode];
-
-  if (isMobile) {
-    return (
-      <DropdownMenuSub>
-        <DropdownMenuSubTrigger>
-          <Icon className="size-4 mr-2 text-primary" />
-          <span>{t("header.toggleView")}</span>
-        </DropdownMenuSubTrigger>
-        <DropdownMenuSubContent className="purcarte-blur border-(--accent-4)/50 rounded-xl">
-          <ViewMenuItems setViewMode={setViewMode} />
-        </DropdownMenuSubContent>
-      </DropdownMenuSub>
-    );
-  }
-
-  return (
-    <DropdownMenu modal={false}>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Icon className="size-5 text-primary" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        className="purcarte-blur mt-[.5rem] border-(--accent-4)/50 rounded-xl">
-        <ViewMenuItems setViewMode={setViewMode} />
-      </DropdownMenuContent>
-    </DropdownMenu>
   );
 };
 
@@ -361,7 +293,6 @@ export const Header = forwardRef<HTMLElement, HeaderProps>((props, ref) => {
                   <DropdownMenuContent
                     align="end"
                     className="purcarte-blur mt-[.5rem] border-(--accent-4)/50 rounded-xl">
-                    {!isInstancePage && <ViewModeSwitcher isMobile />}
                     <ThemeSwitcher isMobile />
                     <AdminButton isMobile />
                   </DropdownMenuContent>
@@ -370,13 +301,10 @@ export const Header = forwardRef<HTMLElement, HeaderProps>((props, ref) => {
             ) : (
               <>
                 {!isInstancePage && (
-                  <>
-                    <SearchBar
-                      searchTerm={searchTerm!}
-                      setSearchTerm={setSearchTerm!}
-                    />
-                    <ViewModeSwitcher />
-                  </>
+                  <SearchBar
+                    searchTerm={searchTerm!}
+                    setSearchTerm={setSearchTerm!}
+                  />
                 )}
                 <ThemeSwitcher />
                 <AdminButton />

@@ -1,8 +1,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
-import { useIsMobile } from "@/hooks/useMobile";
 import { useAppConfig } from "@/config";
 import { DEFAULT_CONFIG, allAppearance } from "@/config/default";
-import type { AppearanceType, ColorType, ViewModeType } from "@/config/default";
+import type { AppearanceType, ColorType } from "@/config/default";
 
 type themeAppearanceType = "light" | "dark";
 const defaultThemeAppearance: themeAppearanceType = "light";
@@ -13,8 +12,6 @@ export interface ThemeContextType {
   setAppearance: (appearance: AppearanceType) => void;
   color: ColorType;
   setColor: (color: ColorType) => void;
-  viewMode: ViewModeType;
-  setViewMode: (mode: ViewModeType) => void;
   statusCardsVisibility: {
     currentTime: boolean;
     currentOnline: boolean;
@@ -33,8 +30,6 @@ export const ThemeContext = createContext<ThemeContextType>({
   setAppearance: () => {},
   color: DEFAULT_CONFIG.selectThemeColor as ColorType,
   setColor: () => {},
-  viewMode: DEFAULT_CONFIG.selectedDefaultView as ViewModeType,
-  setViewMode: () => {},
   statusCardsVisibility: {
     currentTime: true,
     currentOnline: true,
@@ -128,14 +123,8 @@ const useStoredState = <T>(
 };
 
 export const useThemeManager = () => {
-  const {
-    selectedDefaultAppearance,
-    selectThemeColor,
-    selectedDefaultView,
-    selectMobileDefaultView,
-  } = useAppConfig();
+  const { selectedDefaultAppearance, selectThemeColor } = useAppConfig();
   const defaultstatusCardsVisibility = useAppConfig().statusCardsVisibility;
-  const isMobile = useIsMobile();
 
   const [appearance, setAppearance] = useStoredState<AppearanceType>(
     "appearance",
@@ -147,20 +136,6 @@ export const useThemeManager = () => {
     "color",
     selectThemeColor
   );
-
-  const [viewMode, setViewMode] = useStoredState<ViewModeType>(
-    "nodeViewMode",
-    selectedDefaultView
-  );
-
-  useEffect(() => {
-    if (selectMobileDefaultView && isMobile) {
-      setViewMode(selectMobileDefaultView);
-    }
-    if (!isMobile) {
-      setViewMode(selectedDefaultView);
-    }
-  }, [isMobile, selectMobileDefaultView, selectedDefaultView, setViewMode]);
 
   const [statusCardsVisibility, setStatusCardsVisibility] = useStoredState(
     "statusCardsVisibility",
@@ -192,8 +167,6 @@ export const useThemeManager = () => {
     setAppearance,
     color,
     setColor,
-    viewMode,
-    setViewMode,
     statusCardsVisibility,
     setStatusCardsVisibility: handleSetStatusCardsVisibility,
   };

@@ -14,7 +14,6 @@ export interface ConfigOptions {
   tagDefaultColorList: string; // 标签默认颜色列表
   selectThemeColor: ColorType; // 默认主题颜色
   enableLocalStorage: boolean; // 是否启用本地存储
-  selectedDefaultView: ViewModeType; // 默认视图模式
   selectedDefaultAppearance: AppearanceType; // 默认外观模式
   statusCardsVisibility: string; // 状态卡片显示控制
   selectedHeaderStyle: HeaderStyle; // 标题栏样式
@@ -33,7 +32,6 @@ export interface ConfigOptions {
   isOfflineNodesBehind: boolean; // 是否启用离线节点置后显示
   enableGroupedBar: boolean; // 是否启用分组栏
   defaultSelectedGroup: string; // 默认选择展示分组
-  selectMobileDefaultView: ViewModeType; // 移动端默认展示视图
   enableSwap: boolean; // 是否启用SWAP显示
   pingChartTimeInPreview: number; // 预览详情的延迟图表时间范围，单位为小时
   enableInstanceDetail: boolean; // 是否启用实例详情
@@ -42,7 +40,6 @@ export interface ConfigOptions {
   pingChartMaxPoints: number; // 延迟图表最大点数
   isShowHWBarInCard: boolean; // 是否在卡片中显示硬件信息栏
   isShowValueUnderProgressBar: boolean; // 是否在流量进度条下方显示数值
-  selectTrafficProgressStyle: "circular" | "linear"; // 流量进度条样式
   enableListItemProgressBar: boolean; // 是否启用列表视图进度条
   customTexts: string; // 自定义UI文本
 }
@@ -64,7 +61,6 @@ export const DEFAULT_CONFIG: ConfigOptions = {
     "ruby,gray,gold,bronze,brown,yellow,amber,orange,tomato,red",
   selectThemeColor: "violet",
   enableLocalStorage: true,
-  selectedDefaultView: "grid",
   selectedDefaultAppearance: "system",
   statusCardsVisibility:
     "currentTime:true,currentOnline:true,regionOverview:true,trafficOverview:true,networkSpeed:true",
@@ -84,7 +80,6 @@ export const DEFAULT_CONFIG: ConfigOptions = {
   isOfflineNodesBehind: false,
   enableGroupedBar: true,
   defaultSelectedGroup: "",
-  selectMobileDefaultView: "grid",
   enableSwap: true,
   pingChartTimeInPreview: 1,
   enableInstanceDetail: true,
@@ -93,7 +88,6 @@ export const DEFAULT_CONFIG: ConfigOptions = {
   pingChartMaxPoints: 0,
   isShowHWBarInCard: true,
   isShowValueUnderProgressBar: false,
-  selectTrafficProgressStyle: "linear",
   enableListItemProgressBar: true,
   customTexts: "",
 };
@@ -156,8 +150,6 @@ export const allColors: ColorType[] = [
 
 export type AppearanceType = "light" | "dark" | "system";
 export const allAppearance: AppearanceType[] = ["light", "dark", "system"];
-
-export type ViewModeType = "grid" | "table" | "compact";
 
 export type SiteStatus =
   | "public"

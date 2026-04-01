@@ -10,7 +10,7 @@ import {
   formatTrafficLimit,
   getNetworkSpeedColor,
 } from "@/utils";
-import { CircleProgress } from "@/components/ui/progress-circle";
+import { ProgressBar } from "@/components/ui/progress-bar";
 import { useNodeCommons } from "@/hooks/useNodeCommons";
 import { useLiveData } from "@/contexts/LiveDataContext";
 import { useLocale } from "@/config/hooks";
@@ -116,33 +116,22 @@ const Instance = memo(({ node }: InstanceProps) => {
         <InfoItem
           label={t("instancePage.totalTraffic")}
           value={
-            <div className="flex items-center gap-2">
+            <div className="space-y-1">
+              <p>
+                {stats && isOnline
+                  ? `${t("node.uploadPrefix")} ${formatBytes(
+                      stats.net_total_up
+                    )} ${t("node.downloadPrefix")} ${formatBytes(
+                      stats.net_total_down
+                    )}`
+                  : t("node.notAvailable")}
+              </p>
+              <p>{formatTrafficLimit(node.traffic_limit, node.traffic_limit_type)}</p>
               {node.traffic_limit !== 0 && isOnline && stats && (
-                <CircleProgress
-                  value={trafficPercentage}
-                  maxValue={100}
-                  size={32}
-                  strokeWidth={4}
-                  showPercentage={true}
-                />
+                <div className="max-w-[180px]">
+                  <ProgressBar value={trafficPercentage} h="h-2" />
+                </div>
               )}
-              <div>
-                <p>
-                  {stats && isOnline
-                    ? `${t("node.uploadPrefix")} ${formatBytes(
-                        stats.net_total_up
-                      )} ${t("node.downloadPrefix")} ${formatBytes(
-                        stats.net_total_down
-                      )}`
-                    : t("node.notAvailable")}
-                </p>
-                <p>
-                  {formatTrafficLimit(
-                    node.traffic_limit,
-                    node.traffic_limit_type
-                  )}
-                </p>
-              </div>
             </div>
           }
         />
