@@ -20,7 +20,7 @@ const Footer = forwardRef<
         selectedFooterStyle === "levitation"
           ? "fixed"
           : selectedFooterStyle === "followContent"
-          ? "mb-4 w-(--main-width) max-w-screen-2xl mx-auto"
+          ? "mb-4 w-(--main-width) mx-auto"
           : "",
         "bottom-0 left-0 right-0 flex z-10"
       )}

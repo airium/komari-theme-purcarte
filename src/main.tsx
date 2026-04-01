@@ -127,7 +127,7 @@ const AppRoutes = ({
                   viewportProps={{ onScroll: handleHomeScroll }}>
                   <div className="flex flex-col min-h-screen">
                     <main
-                      className="w-(--main-width) max-w-screen-2xl mx-auto h-full flex-grow"
+                      className="w-(--main-width) mx-auto h-full flex-grow"
                       style={{
                         paddingTop:
                           selectedHeaderStyle === "levitation"
@@ -164,7 +164,7 @@ const AppRoutes = ({
                   viewportRef={instanceViewportRef}>
                   <div className="flex flex-col min-h-screen">
                     <main
-                      className="w-(--main-width) max-w-screen-2xl h-full mx-auto flex-1"
+                      className="w-(--main-width) h-full mx-auto flex-1"
                       style={{
                         paddingTop:
                           selectedHeaderStyle === "levitation"
@@ -188,7 +188,7 @@ const AppRoutes = ({
               path="*"
               element={
                 <div className="flex flex-col min-h-screen">
-                  <main className="w-(--main-width) max-w-screen-2xl h-full mx-auto flex-1">
+                  <main className="w-(--main-width) h-full mx-auto flex-1">
                     <NotFoundPage />
                   </main>
                   {selectedFooterStyle === "followContent" && (
@@ -282,7 +282,7 @@ export const AppContent = () => {
                 />
                 <Suspense fallback={<Loading />}>
                   <div className="flex flex-col min-h-screen">
-                    <main className="w-(--main-width) max-w-screen-2xl h-full mx-auto flex-1">
+                    <main className="w-(--main-width) h-full mx-auto flex-1">
                       <PrivatePage />
                     </main>
                     {selectedFooterStyle === "followContent" && (

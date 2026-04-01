@@ -231,7 +231,7 @@ const SearchBar = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
-          className="purcarte-blur border-(--accent-4)/50 rounded-xl w-[90vw] translate-x-[5vw] mt-[.5rem] max-w-screen-2xl">
+          className="purcarte-blur border-(--accent-4)/50 rounded-xl w-[90vw] translate-x-[5vw] mt-[.5rem]">
           <div className="p-2">
             <Input
               type="search"
@@ -319,7 +319,7 @@ export const Header = forwardRef<HTMLElement, HeaderProps>((props, ref) => {
         right: isSettingsOpen && !isMobile ? "var(--setting-width)" : "0",
       }}>
       <Card className="rounded-none w-full flex items-center justify-center">
-        <div className="w-(--main-width) max-w-screen-2xl py-2 flex items-center justify-between">
+        <div className="w-(--main-width) py-2 flex items-center justify-between">
           <div className="flex items-center theme-text-shadow text-accent-foreground">
             <a href="/" className="flex items-center gap-2 text-2xl font-bold">
               {enableLogo && logoUrl && (
