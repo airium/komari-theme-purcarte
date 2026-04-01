@@ -276,23 +276,16 @@ const NodeTableRow = ({
                     : t("node.notAvailable")}
                 </div>
               </div>
+              <div className="text-xs text-secondary-foreground">
+                {formatTrafficLimit(node.traffic_limit, node.traffic_limit_type)}
+              </div>
               {node.traffic_limit !== 0 && isOnline && stats && (
-                <>
-                  <div className="w-[80%] flex items-center gap-1">
-                    <ProgressBar value={trafficPercentage} h="h-2" />
-                    <span className="text-right text-xs">
-                      {node.traffic_limit !== 0
-                        ? formatPercentage(trafficPercentage)
-                        : ""}
-                    </span>
-                  </div>
-                  <div className="text-xs text-secondary-foreground">
-                    {formatTrafficLimit(
-                      node.traffic_limit,
-                      node.traffic_limit_type
-                    )}
-                  </div>
-                </>
+                <div className="w-[80%] flex items-center gap-1">
+                  <ProgressBar value={trafficPercentage} h="h-2" />
+                  <span className="text-right text-xs">
+                    {formatPercentage(trafficPercentage)}
+                  </span>
+                </div>
               )}
             </div>
           ) : (
@@ -312,7 +305,7 @@ const NodeTableRow = ({
                       : t("node.notAvailable")}
                   </div>
                 </div>
-                {node.traffic_limit !== 0 && isOnline && stats && (
+                {isOnline && stats && (
                   <div>
                     {formatTrafficLimit(
                       node.traffic_limit,

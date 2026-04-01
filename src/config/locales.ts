@@ -18,6 +18,7 @@ export const defaultTexts = {
     offline: "离线",
     online: "在线",
     off: "OFF",
+    unlimited: "无限制",
     notAvailable: "N/A",
     notEnabled: "未启用",
     expired: "已过期",

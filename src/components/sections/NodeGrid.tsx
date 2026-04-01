@@ -221,7 +221,7 @@ export const NodeGrid = ({
                 <span className="w-12 text-right">
                   {node.traffic_limit !== 0
                     ? formatPercentage(trafficPercentage)
-                    : t("node.off")}
+                    : t("node.unlimited")}
                 </span>
               </div>
             </div>
@@ -302,7 +302,7 @@ export const NodeGrid = ({
                       : t("node.notAvailable")}
                   </span>
                 </div>
-                {node.traffic_limit !== 0 && isOnline && stats && (
+                {isOnline && stats && (
                   <div className="text-right">
                     {formatTrafficLimit(
                       node.traffic_limit,

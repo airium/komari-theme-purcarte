@@ -272,7 +272,8 @@ export const formatTrafficLimit = (
   limit?: number,
   type?: "sum" | "max" | "min" | "up" | "down"
 ) => {
-  if (!limit) return "未设置";
+  if (limit === undefined) return "未设置";
+  if (limit === 0) return "无限制";
 
   const limitText = formatBytes(limit);
 
@@ -285,7 +286,7 @@ export const formatTrafficLimit = (
       down: "下载",
     }[type || "max"] || "";
 
-  return `总 ${limitText} (${typeText})`;
+  return `${typeText}: ${limitText}`;
 };
 
 export const getProgressBarClass = (percentage: number) => {
