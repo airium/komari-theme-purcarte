@@ -5,10 +5,12 @@ import {
   formatPercentage,
   formatPrice,
   formatUptime,
+  getExpiryDaysLeftColor,
   getTrafficLimitTypeLabel,
   getNetworkSpeedColor,
   getOSImage,
   getRegionDisplayName,
+  getUptimeHoursColor,
 } from "@/utils";
 import type { NodeData } from "@/types/node";
 import { Link } from "react-router-dom";
@@ -206,16 +208,24 @@ const NodeTableRow = ({ node, enableListItemProgressBar }: NodeTableRowProps) =>
     usedTraffic,
   ]);
 
-  const remainingText = useMemo(() => {
+  const remainingInfo = useMemo(() => {
     if (!node.expired_at || new Date(node.expired_at).getTime() <= 0) {
-      return "";
+      return { text: "", color: "" };
     }
+
     const daysLeft = Math.ceil(
       (new Date(node.expired_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
     );
-    if (daysLeft > 36500) return "";
-    if (daysLeft < 0) return t("node.expired");
-    return t("node.daysLeft", { daysLeft });
+
+    if (daysLeft > 36500) return { text: "", color: "" };
+    if (daysLeft < 0) {
+      return { text: t("node.expired"), color: getExpiryDaysLeftColor(1) };
+    }
+
+    return {
+      text: t("node.daysLeft", { daysLeft }),
+      color: getExpiryDaysLeftColor(daysLeft),
+    };
   }, [node.expired_at, t]);
 
   const loadLine = load.split("|").map((item) => item.trim()).join(", ");
@@ -290,12 +300,24 @@ const NodeTableRow = ({ node, enableListItemProgressBar }: NodeTableRowProps) =>
 
         <div className={cn(TWO_LINE_CELL_CLASS, "text-left leading-tight")}>
           <div className="truncate">{expired_at}</div>
-          <div className="truncate text-secondary-foreground">{remainingText}</div>
+          <div className="truncate text-secondary-foreground">
+            {remainingInfo.text ? (
+              <span style={{ color: remainingInfo.color }}>{remainingInfo.text}</span>
+            ) : (
+              ""
+            )}
+          </div>
         </div>
 
         <div className={cn(TWO_LINE_CELL_CLASS, "text-center leading-tight")}>
           <div className="truncate">
-            {isOnline && stats ? formatUptime(stats.uptime) + " hrs" : t("node.notAvailable")}
+            {isOnline && stats ? (
+              <span style={{ color: getUptimeHoursColor(stats.uptime / 3600) }}>
+                {t("instancePage.hours", { count: formatUptime(stats.uptime) })}
+              </span>
+            ) : (
+              t("node.notAvailable")
+            )}
           </div>
           <div></div>
         </div>

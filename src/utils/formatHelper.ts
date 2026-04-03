@@ -15,6 +15,20 @@ const NETWORK_SPEED_COLOR_STOPS: Array<{ mbps: number; color: RGB }> = [
   { mbps: 10000, color: [239, 68, 68] },
 ];
 
+const EXPIRY_DAYS_COLOR_STOPS: Array<{ value: number; color: RGB }> = [
+  { value: 7, color: [239, 68, 68] },
+  { value: 49, color: [250, 204, 21] },
+  { value: 343, color: [34, 197, 94] },
+  { value: 2443, color: [255, 255, 255] },
+];
+
+const UPTIME_HOURS_COLOR_STOPS: Array<{ value: number; color: RGB }> = [
+  { value: 10, color: [239, 68, 68] },
+  { value: 100, color: [250, 204, 21] },
+  { value: 1000, color: [34, 197, 94] },
+  { value: 10000, color: [255, 255, 255] },
+];
+
 const pad2 = (value: number) => String(value).padStart(2, "0");
 
 const parseDateInput = (value: DateInput): Date | null => {
@@ -141,6 +155,33 @@ const mixColor = (from: RGB, to: RGB, ratio: number): RGB => {
 
 const rgbToCss = ([r, g, b]: RGB) => `rgb(${r} ${g} ${b})`;
 
+const getLogScaleColor = (
+  value: number,
+  stops: Array<{ value: number; color: RGB }>
+) => {
+  if (!Number.isFinite(value) || value <= 0) {
+    return rgbToCss(stops[0].color);
+  }
+
+  if (value <= stops[0].value) {
+    return rgbToCss(stops[0].color);
+  }
+
+  for (let i = 0; i < stops.length - 1; i++) {
+    const from = stops[i];
+    const to = stops[i + 1];
+
+    if (value <= to.value) {
+      const ratio =
+        (Math.log(value) - Math.log(from.value)) /
+        (Math.log(to.value) - Math.log(from.value));
+      return rgbToCss(mixColor(from.color, to.color, ratio));
+    }
+  }
+
+  return rgbToCss(stops[stops.length - 1].color);
+};
+
 export const getNetworkSpeedColor = (bytesPerSecond: number) => {
   if (!Number.isFinite(bytesPerSecond) || bytesPerSecond <= 0) {
     return rgbToCss(NETWORK_SPEED_COLOR_STOPS[0].color);
@@ -181,6 +222,12 @@ export const getNetworkSpeedColor = (bytesPerSecond: number) => {
 
   return rgbToCss(NETWORK_SPEED_COLOR_STOPS[3].color);
 };
+
+export const getExpiryDaysLeftColor = (daysLeft: number) =>
+  getLogScaleColor(daysLeft, EXPIRY_DAYS_COLOR_STOPS);
+
+export const getUptimeHoursColor = (hours: number) =>
+  getLogScaleColor(hours, UPTIME_HOURS_COLOR_STOPS);
 
 // Helper function to format bytes
 export const formatBytes = (

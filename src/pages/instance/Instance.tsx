@@ -14,6 +14,7 @@ import {
   formatUptime,
   getTrafficLimitTypeLabel,
   getNetworkSpeedColor,
+  getUptimeHoursColor,
 } from "@/utils";
 import { useNodeCommons } from "@/hooks/useNodeCommons";
 import { useLiveData } from "@/contexts/LiveDataContext";
@@ -279,7 +280,15 @@ const Instance = memo(({ node }: InstanceProps) => {
         <InfoItem
           className="border-r border-(--accent-7)/70"
           label={t("instancePage.runtime")}
-          value={formatUptime(stats?.uptime || 0)}
+          value={
+            stats && isOnline ? (
+              <span style={{ color: getUptimeHoursColor(stats.uptime / 3600) }}>
+                {t("instancePage.hours", { count: formatUptime(stats.uptime) })}
+              </span>
+            ) : (
+              t("node.notAvailable")
+            )
+          }
         />
         <InfoItem
           className="border-r border-(--accent-7)/70"
