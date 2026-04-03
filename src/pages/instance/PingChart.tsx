@@ -409,7 +409,7 @@ const PingChart = memo(({ node, initialHours = 1 }: PingChartProps) => {
                   key={`${range.label}-${range.hours}`}
                   variant={hours === range.hours ? "default" : "ghost"}
                   size="sm"
-                  className="h-7 px-2 text-[11px]"
+                  className="h-7 px-2 text-sm"
                   onClick={() => setHours(range.hours)}>
                   {range.label}
                 </Button>

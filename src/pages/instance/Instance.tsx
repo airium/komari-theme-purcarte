@@ -71,6 +71,17 @@ interface InstanceProps {
   node: NodeData;
 }
 
+const normalizeDetailText = (value?: string | null) => {
+  if (value === null || value === undefined) return "-";
+
+  const trimmed = value.trim();
+  if (!trimmed || trimmed.toLowerCase() === "none") {
+    return "-";
+  }
+
+  return trimmed;
+};
+
 const Instance = memo(({ node }: InstanceProps) => {
   const { liveData } = useLiveData();
   const nodeWithStats = useMemo(
@@ -125,12 +136,12 @@ const Instance = memo(({ node }: InstanceProps) => {
         <InfoItem
           className="border-r border-b border-(--accent-7)/70"
           label={t("instancePage.architecture")}
-          value={node.arch}
+          value={node.arch.toLocaleUpperCase()}
         />
         <InfoItem
           className="border-b border-(--accent-7)/70"
           label={t("instancePage.virtualization")}
-          value={node.virtualization}
+          value={normalizeDetailText(node.virtualization).toLocaleUpperCase()}
         />
 
         {/* row 2 */}
@@ -155,7 +166,7 @@ const Instance = memo(({ node }: InstanceProps) => {
         <InfoItem
           className="col-span-3 border-r border-b border-(--accent-7)/70"
           label={t("instancePage.gpu")}
-          value={node.gpu_name || t("node.notAvailable")}
+          value={normalizeDetailText(node.gpu_name)}
         />
         <div aria-hidden="true" className="border-b border-(--accent-7)/70" />
 
@@ -244,7 +255,7 @@ const Instance = memo(({ node }: InstanceProps) => {
           label={t("node.traffic")}
           value={
             node.traffic_limit === 0
-              ? `${t("node.unlimited")} ${t("node.traffic")}`
+              ? "∞"
               : node.traffic_limit === undefined
               ? t("node.notSet")
               : (

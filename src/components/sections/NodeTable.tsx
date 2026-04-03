@@ -80,9 +80,9 @@ export const NodeTable = ({
               <HardDriveIcon className="size-4 text-red-600" />
               <span>{t("node.disk")}</span>
             </div>
-            <div className="text-center">实时网速</div>
-            <div className="text-center">流量汇总</div>
-            <div className="text-left">流量配额</div>
+            <div className="text-center">网速</div>
+            <div className="text-center">流量</div>
+            <div className="text-left">配额</div>
           </Card>
           {nodes.map((node) => (
             <NodeTableRow
@@ -168,7 +168,7 @@ const NodeTableRow = ({ node, enableListItemProgressBar }: NodeTableRowProps) =>
 
   const trafficQuotaSummary = useMemo(() => {
     if (isUnlimitedTraffic) {
-      return `${t("node.unlimited")}${t("node.traffic")}`;
+      return "∞";
     }
 
     if (!hasTrafficLimit) {
@@ -198,12 +198,12 @@ const NodeTableRow = ({ node, enableListItemProgressBar }: NodeTableRowProps) =>
 
   const remainingText = useMemo(() => {
     if (!node.expired_at || new Date(node.expired_at).getTime() <= 0) {
-      return t("node.notSet");
+      return "";
     }
     const daysLeft = Math.ceil(
       (new Date(node.expired_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
     );
-    if (daysLeft > 36500) return t("node.longTerm");
+    if (daysLeft > 36500) return "";
     if (daysLeft < 0) return t("node.expired");
     return t("node.daysLeft", { daysLeft });
   }, [node.expired_at, t]);
@@ -261,7 +261,7 @@ const NodeTableRow = ({ node, enableListItemProgressBar }: NodeTableRowProps) =>
                 loading="lazy"
               />
             </span>
-            <span className="truncate">{nodePrice || t("node.notSet")}</span>
+            <span className="truncate">{nodePrice || ""}</span>
           </div>
         </div>
 

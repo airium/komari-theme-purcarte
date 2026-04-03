@@ -213,28 +213,9 @@ export const formatUptime = (seconds: number) => {
   if (isNaN(seconds) || seconds < 0) {
     return "N/A";
   }
-  const days = Math.floor(seconds / (3600 * 24));
-  seconds -= days * 3600 * 24;
-  const hrs = Math.floor(seconds / 3600);
-  seconds -= hrs * 3600;
-  const mns = Math.floor(seconds / 60);
 
-  let uptimeString = "";
-  if (days > 0) {
-    uptimeString += `${days}天`;
-  }
-  if (hrs > 0) {
-    uptimeString += `${hrs}小时`;
-  }
-  if (mns > 0 && days === 0) {
-    // Only show minutes if uptime is less than a day
-    uptimeString += `${mns}分钟`;
-  }
-  if (uptimeString === "") {
-    return "刚刚";
-  }
-
-  return uptimeString;
+  const hours = seconds / 3600;
+  return formatSignificantDigits(hours, 3, "N/A");
 };
 
 export const formatPrice = (
@@ -242,9 +223,9 @@ export const formatPrice = (
   currency: string,
   billingCycle: number
 ) => {
-  if (price === -1) return "免费";
+  if (price === -1) return "FREE";
   if (price === 0) return "";
-  if (!currency || !billingCycle) return "N/A";
+  if (!currency || !billingCycle) return "";
 
   let cycleStr = `${billingCycle}天`;
   if (billingCycle < 0) {
@@ -273,7 +254,7 @@ export const formatTrafficLimit = (
   type?: "sum" | "max" | "min" | "up" | "down"
 ) => {
   if (limit === undefined) return "未设置";
-  if (limit === 0) return "无限制";
+  if (limit === 0) return "∞";
 
   const limitText = formatBytes(limit);
 

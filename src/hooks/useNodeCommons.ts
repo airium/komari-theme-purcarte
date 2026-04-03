@@ -199,8 +199,8 @@ export const useNodeCommons = (node: NodeData & { stats?: any }) => {
     daysLeft !== null && daysLeft > 36500
       ? t("node.longTerm")
       : node.expired_at && new Date(node.expired_at).getTime() > 0
-      ? formatIsoDate(node.expired_at, t("node.notSet"))
-      : t("node.notSet");
+      ? formatIsoDate(node.expired_at, "")
+      : "";
 
   const tagList = [
     ...(price ? [price] : []),

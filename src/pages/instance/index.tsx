@@ -97,7 +97,7 @@ const InstancePage = () => {
               className="flex-shrink-0"
               variant="outline"
               size="icon"
-              onClick={() => navigate(-1)}>
+              onClick={() => navigate("/")}>
               <ArrowLeft />
             </Button>
             <div className="flex-1 min-w-0">
@@ -112,8 +112,12 @@ const InstancePage = () => {
                       type="button"
                       variant={isCurrent ? "default" : "outline"}
                       size="sm"
-                      className={`h-auto px-3 py-2 justify-start max-w-full ${
+                      className={`h-auto px-3 py-2 justify-start max-w-full border ${
                         isCurrent ? "ring-2 ring-(--accent-8)" : ""
+                      } ${
+                        !tileOnline
+                          ? "striped-bg-red-translucent-diagonal border-red-500/60 text-red-600 dark:text-red-300"
+                          : ""
                       }`}
                       onClick={() => navigate(`/instance/${item.uuid}`)}>
                       <span className="flex items-center gap-1.5 min-w-0">
