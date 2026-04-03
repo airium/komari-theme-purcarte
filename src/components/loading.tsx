@@ -1,4 +1,5 @@
 import "./Loading.css";
+import { useLocale } from "@/config/hooks";
 
 type LoadingProps = {
   text?: string;
@@ -8,6 +9,8 @@ type LoadingProps = {
 };
 
 const Loading = ({ text, children, size, className }: LoadingProps) => {
+  const { t } = useLocale();
+
   return (
     <div
       className={`flex items-center justify-center flex-col w-full h-full ${
@@ -28,7 +31,7 @@ const Loading = ({ text, children, size, className }: LoadingProps) => {
           </svg>
         </div>
       </div>
-      <p className="text-lg font-bold">Loading...</p>
+      <p className="text-lg font-bold">{t("common.loading")}</p>
       <p className="text-sm text-muted-foreground mb-4">{text}</p>
       <div>{children}</div>
     </div>

@@ -109,7 +109,10 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
 
   if (!isLoaded || !config) {
     return (
-      <Loading text="加载配置中..." className={!loading ? "fade-out" : ""} />
+      <Loading
+        text={defaultTexts.homePage.loadingConfig}
+        className={!loading ? "fade-out" : ""}
+      />
     );
   }
 

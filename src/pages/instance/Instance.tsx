@@ -12,6 +12,7 @@ import {
   formatLoadValue,
   formatNetworkSpeedMbps,
   formatUptime,
+  getTrafficLimitTypeLabel,
   getNetworkSpeedColor,
 } from "@/utils";
 import { useNodeCommons } from "@/hooks/useNodeCommons";
@@ -112,14 +113,16 @@ const Instance = memo(({ node }: InstanceProps) => {
     }
   }, [stats, isOnline, node.traffic_limit_type]);
 
-  const trafficTypeText =
+  const trafficTypeText = getTrafficLimitTypeLabel(
+    node.traffic_limit_type || "max",
     {
-      sum: "总和",
-      max: "最大值",
-      min: "最小值",
-      up: "上传",
-      down: "下载",
-    }[node.traffic_limit_type || "max"] || "最大值";
+      sum: t("node.trafficTypeSum"),
+      max: t("node.trafficTypeMax"),
+      min: t("node.trafficTypeMin"),
+      up: t("node.trafficTypeUp"),
+      down: t("node.trafficTypeDown"),
+    }
+  );
 
   return (
     <Card className="h-full">

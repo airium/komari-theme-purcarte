@@ -220,6 +220,7 @@ export const Header = forwardRef<HTMLElement, HeaderProps>((props, ref) => {
     setIsSettingsOpen,
     isSettingsOpen,
   } = props;
+  const { t } = useLocale();
   const location = useLocation();
   const isInstancePage = location.pathname.startsWith("/instance");
   const {
@@ -255,7 +256,7 @@ export const Header = forwardRef<HTMLElement, HeaderProps>((props, ref) => {
           <div className="flex items-center theme-text-shadow text-accent-foreground">
             <a href="/" className="flex items-center gap-2 text-2xl font-bold">
               {enableLogo && logoUrl && (
-                <img src={logoUrl} alt="logo" className="h-8" />
+                <img src={logoUrl} alt={t("header.logoAlt")} className="h-8" />
               )}
               {enableTitle && <span>{titleText}</span>}
             </a>

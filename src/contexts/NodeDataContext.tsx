@@ -8,9 +8,11 @@ import {
 } from "react";
 import { apiService } from "../services/api";
 import type { NodeData } from "../types/node";
+import { useLocale } from "@/config/hooks";
 
 // The core logic from the original useNodeData.ts, now kept internal to this file.
 function useNodesInternal() {
+  const { t } = useLocale();
   const [staticNodes, setStaticNodes] = useState<NodeData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,11 +26,13 @@ function useNodesInternal() {
       const sortedNodes = nodeData.sort((a, b) => a.weight - b.weight);
       setStaticNodes(sortedNodes);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "获取节点数据失败");
+      setError(
+        err instanceof Error ? err.message : t("homePage.errorFetchingNodes")
+      );
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   const refreshNodes = useCallback(async () => {
     await fetchNodes();

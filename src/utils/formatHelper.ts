@@ -218,32 +218,78 @@ export const formatUptime = (seconds: number) => {
   return formatSignificantDigits(hours, 3, "N/A");
 };
 
+export interface PriceFormatLabels {
+  free?: string;
+  billingCycleDays?: string;
+  billingCycleMonth?: string;
+  billingCycleQuarter?: string;
+  billingCycleHalfYear?: string;
+  billingCycleYear?: string;
+  billingCycleTwoYears?: string;
+  billingCycleThreeYears?: string;
+  billingCycleFiveYears?: string;
+}
+
+export type TrafficLimitType = "sum" | "max" | "min" | "up" | "down";
+
+export interface TrafficTypeLabels {
+  sum?: string;
+  max?: string;
+  min?: string;
+  up?: string;
+  down?: string;
+}
+
+interface TrafficLimitLabels {
+  notSet?: string;
+  unlimited?: string;
+  typeLabels?: TrafficTypeLabels;
+}
+
+const DEFAULT_TRAFFIC_TYPE_LABELS: Required<TrafficTypeLabels> = {
+  sum: "Total",
+  max: "Maximum",
+  min: "Minimum",
+  up: "Upload",
+  down: "Download",
+};
+
+export const getTrafficLimitTypeLabel = (
+  type: TrafficLimitType,
+  labels: TrafficTypeLabels = {}
+) => {
+  const merged = { ...DEFAULT_TRAFFIC_TYPE_LABELS, ...labels };
+  return merged[type] || merged.max;
+};
+
 export const formatPrice = (
   price: number,
   currency: string,
-  billingCycle: number
+  billingCycle: number,
+  labels: PriceFormatLabels = {}
 ) => {
-  if (price === -1) return "FREE";
+  if (price === -1) return labels.free || "FREE";
   if (price === 0) return "";
   if (!currency || !billingCycle) return "";
 
-  let cycleStr = `${billingCycle}天`;
+  const daysTemplate = labels.billingCycleDays || "{days} days";
+  let cycleStr = daysTemplate.replace("{days}", String(billingCycle));
   if (billingCycle < 0) {
     return `${currency}${price.toFixed(2)}`;
   } else if (billingCycle === 30 || billingCycle === 31) {
-    cycleStr = "月";
+    cycleStr = labels.billingCycleMonth || "mo";
   } else if (billingCycle >= 89 && billingCycle <= 92) {
-    cycleStr = "季";
+    cycleStr = labels.billingCycleQuarter || "3 mo";
   } else if (billingCycle >= 180 && billingCycle <= 183) {
-    cycleStr = "半年";
+    cycleStr = labels.billingCycleHalfYear || "6 mo";
   } else if (billingCycle >= 364 && billingCycle <= 366) {
-    cycleStr = "年";
+    cycleStr = labels.billingCycleYear || "yr";
   } else if (billingCycle >= 730 && billingCycle <= 732) {
-    cycleStr = "两年";
+    cycleStr = labels.billingCycleTwoYears || "2 yrs";
   } else if (billingCycle >= 1095 && billingCycle <= 1097) {
-    cycleStr = "三年";
+    cycleStr = labels.billingCycleThreeYears || "3 yrs";
   } else if (billingCycle >= 1825 && billingCycle <= 1827) {
-    cycleStr = "五年";
+    cycleStr = labels.billingCycleFiveYears || "5 yrs";
   }
 
   return `${currency}${price.toFixed(2)}/${cycleStr}`;
@@ -251,21 +297,15 @@ export const formatPrice = (
 
 export const formatTrafficLimit = (
   limit?: number,
-  type?: "sum" | "max" | "min" | "up" | "down"
+  type: TrafficLimitType = "max",
+  labels: TrafficLimitLabels = {}
 ) => {
-  if (limit === undefined) return "未设置";
-  if (limit === 0) return "∞";
+  if (limit === undefined) return labels.notSet || "Not set";
+  if (limit === 0) return labels.unlimited || "∞";
 
   const limitText = formatBytes(limit);
 
-  const typeText =
-    {
-      sum: "总和",
-      max: "最大值",
-      min: "最小值",
-      up: "上传",
-      down: "下载",
-    }[type || "max"] || "";
+  const typeText = getTrafficLimitTypeLabel(type, labels.typeLabels || {});
 
   return `${typeText}: ${limitText}`;
 };

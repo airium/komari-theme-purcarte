@@ -5,6 +5,7 @@ import {
   formatPercentage,
   formatPrice,
   formatUptime,
+  getTrafficLimitTypeLabel,
   getNetworkSpeedColor,
   getOSImage,
   getRegionDisplayName,
@@ -65,7 +66,7 @@ export const NodeTable = ({
             style={{ gridTemplateColumns: TABLE_COLUMN_TEMPLATE }}>
             <div className="text-center">#</div>
             <div className="text-left">{t("node.name")}</div>
-            <div className="text-left">标签</div>
+            <div className="text-left">{t("node.tags")}</div>
             <div className="text-left">{t("node.expiredAt")}</div>
             <div className="text-left">{t("node.uptime")}</div>
             <div className="text-left flex items-center gap-1">
@@ -80,9 +81,9 @@ export const NodeTable = ({
               <HardDriveIcon className="size-4 text-red-600" />
               <span>{t("node.disk")}</span>
             </div>
-            <div className="text-center">网速</div>
-            <div className="text-center">流量</div>
-            <div className="text-left">配额</div>
+            <div className="text-center">{t("node.speed")}</div>
+            <div className="text-center">{t("node.traffic")}</div>
+            <div className="text-left">{t("node.quota")}</div>
           </Card>
           {nodes.map((node) => (
             <NodeTableRow
@@ -134,17 +135,26 @@ const NodeTableRow = ({ node, enableListItemProgressBar }: NodeTableRowProps) =>
       .filter(Boolean);
   }, [node.tags]);
 
-  const regionName = getRegionDisplayName(node.region, "zh");
-  const nodePrice = formatPrice(node.price, node.currency, node.billing_cycle);
+  const regionName = getRegionDisplayName(node.region, "en");
+  const nodePrice = formatPrice(node.price, node.currency, node.billing_cycle, {
+    free: t("node.free"),
+    billingCycleDays: t("node.billingCycleDays", { days: "{days}" }),
+    billingCycleMonth: t("node.billingCycleMonth"),
+    billingCycleQuarter: t("node.billingCycleQuarter"),
+    billingCycleHalfYear: t("node.billingCycleHalfYear"),
+    billingCycleYear: t("node.billingCycleYear"),
+    billingCycleTwoYears: t("node.billingCycleTwoYears"),
+    billingCycleThreeYears: t("node.billingCycleThreeYears"),
+    billingCycleFiveYears: t("node.billingCycleFiveYears"),
+  });
   const trafficType = node.traffic_limit_type || "max";
-  const trafficTypeText =
-    {
-      sum: "总和",
-      max: "最大值",
-      min: "最小值",
-      up: "上传",
-      down: "下载",
-    }[trafficType] || "最大值";
+  const trafficTypeText = getTrafficLimitTypeLabel(trafficType, {
+    sum: t("node.trafficTypeSum"),
+    max: t("node.trafficTypeMax"),
+    min: t("node.trafficTypeMin"),
+    up: t("node.trafficTypeUp"),
+    down: t("node.trafficTypeDown"),
+  });
   const hasTrafficLimit =
     typeof node.traffic_limit === "number" && node.traffic_limit > 0;
   const isUnlimitedTraffic = node.traffic_limit === 0;
@@ -283,9 +293,9 @@ const NodeTableRow = ({ node, enableListItemProgressBar }: NodeTableRowProps) =>
           <div className="truncate text-secondary-foreground">{remainingText}</div>
         </div>
 
-        <div className={cn(TWO_LINE_CELL_CLASS, "text-left leading-tight")}>
+        <div className={cn(TWO_LINE_CELL_CLASS, "text-center leading-tight")}>
           <div className="truncate">
-            {isOnline && stats ? formatUptime(stats.uptime) : t("node.offline")}
+            {isOnline && stats ? formatUptime(stats.uptime) + " hrs" : t("node.notAvailable")}
           </div>
           <div></div>
         </div>

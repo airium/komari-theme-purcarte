@@ -100,7 +100,7 @@ export const StatsBar = (props: StatsBarProps) => {
     if (displayOptions.trafficOverview) {
       entries.push({
         key: "trafficOverview",
-        label: getLabel(t("statsBar.trafficShort"), t("statsBar.traffic")),
+        label: getLabel("", t("statsBar.traffic")),
         lines: loading
           ? ["..."]
           : [
@@ -118,10 +118,7 @@ export const StatsBar = (props: StatsBarProps) => {
       const downColor = getNetworkSpeedColor(stats.currentSpeedDown);
       entries.push({
         key: "networkSpeed",
-        label: getLabel(
-          t("statsBar.networkSpeedShort"),
-          t("statsBar.networkSpeed")
-        ),
+        label: getLabel("", t("statsBar.networkSpeed")),
         lines: loading
           ? ["..."]
           : [

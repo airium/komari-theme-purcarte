@@ -50,7 +50,7 @@ const Footer = forwardRef<
             className="text-blue-500 hover:text-blue-600 transition-colors">
             PurCarte
           </a>
-          {" with "}
+          &nbsp;
           <a
             href="https://github.com/airium/komari-theme-purcarte"
             target="_blank"

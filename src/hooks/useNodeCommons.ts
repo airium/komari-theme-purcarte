@@ -148,7 +148,17 @@ export const useNodeCommons = (node: NodeData & { stats?: any }) => {
   const { stats } = node;
   const { t } = useLocale();
   const isOnline = stats ? stats.online : false;
-  const price = formatPrice(node.price, node.currency, node.billing_cycle);
+  const price = formatPrice(node.price, node.currency, node.billing_cycle, {
+    free: t("node.free"),
+    billingCycleDays: t("node.billingCycleDays", { days: "{days}" }),
+    billingCycleMonth: t("node.billingCycleMonth"),
+    billingCycleQuarter: t("node.billingCycleQuarter"),
+    billingCycleHalfYear: t("node.billingCycleHalfYear"),
+    billingCycleYear: t("node.billingCycleYear"),
+    billingCycleTwoYears: t("node.billingCycleTwoYears"),
+    billingCycleThreeYears: t("node.billingCycleThreeYears"),
+    billingCycleFiveYears: t("node.billingCycleFiveYears"),
+  });
 
   const cpuUsage = stats && isOnline ? stats.cpu : 0;
   const memUsage =

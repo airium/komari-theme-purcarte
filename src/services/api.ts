@@ -11,6 +11,7 @@ import type {
 import type { RpcNodeStatus, RpcNodeStatusMap } from "@/types/rpc";
 import { convertNodeStatsToRpcNodeStatus } from "@/utils/converters";
 import type { SiteStatus } from "@/config/default";
+import { defaultTexts } from "@/config/locales";
 
 class ApiService {
   private baseUrl: string;
@@ -54,7 +55,10 @@ class ApiService {
       console.error(`RPC call to '${method}' failed:`, error);
       return {
         status: "error",
-        message: error instanceof Error ? error.message : "Unknown RPC error",
+        message:
+          error instanceof Error
+            ? error.message
+            : defaultTexts.api.unknownRpcError,
         data: null as any,
       };
     }
@@ -79,7 +83,9 @@ class ApiService {
       return {
         status: "error",
         message:
-          error instanceof Error ? error.message : "Unknown network error",
+          error instanceof Error
+            ? error.message
+            : defaultTexts.api.unknownNetworkError,
         data: null as any,
       };
     }
@@ -204,7 +210,10 @@ class ApiService {
     );
     return response.status === "success"
       ? response.data
-      : { version: "unknown", hash: "unknown" };
+      : {
+          version: defaultTexts.api.unknownValue,
+          hash: defaultTexts.api.unknownValue,
+        };
   }
 
   // 获取用户信息
@@ -276,7 +285,8 @@ class ApiService {
       console.error("Failed to save theme settings:", error);
       return {
         status: "error",
-        message: error instanceof Error ? error.message : "Unknown error",
+        message:
+          error instanceof Error ? error.message : defaultTexts.api.unknownError,
         data: null,
       };
     }

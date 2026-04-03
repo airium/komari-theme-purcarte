@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNodeData } from "@/contexts/NodeDataContext";
 import type { PingHistoryResponse, NodeData } from "@/types/node";
+import { useLocale } from "@/config/hooks";
 
 const cache = new Map<string, PingHistoryResponse>();
 
 export const usePingChart = (node: NodeData | null, hours: number) => {
+  const { t } = useLocale();
   const { getPingHistory } = useNodeData();
   const [pingHistory, setPingHistory] = useState<PingHistoryResponse | null>(
     null
@@ -38,14 +40,14 @@ export const usePingChart = (node: NodeData | null, hours: number) => {
         }
         setPingHistory(data);
       } catch (err: any) {
-        setError(err.message || "Failed to fetch history data");
+        setError(err.message || t("chart.fetchPingHistoryError"));
       } finally {
         setLoading(false);
       }
     };
 
     fetchHistory();
-  }, [node?.uuid, hours, getPingHistory]);
+  }, [node?.uuid, hours, getPingHistory, t]);
 
   return {
     loading,

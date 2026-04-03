@@ -4,8 +4,10 @@ import type { HistoryRecord, NodeData } from "@/types/node";
 import type { RpcNodeStatus } from "@/types/rpc";
 import { useLiveData } from "@/contexts/LiveDataContext";
 import fillMissingTimePoints from "@/utils/RecordHelper";
+import { useLocale } from "@/config/hooks";
 
 export const useLoadCharts = (node: NodeData | null, hours: number) => {
+  const { t } = useLocale();
   const { getLoadHistory, getRecentLoadHistory } = useNodeData();
   const { liveData } = useLiveData();
   const [historicalData, setHistoricalData] = useState<HistoryRecord[]>([]);
@@ -31,14 +33,14 @@ export const useLoadCharts = (node: NodeData | null, hours: number) => {
 
         setRealtimeData([]); // Clear realtime data
       } catch (err: any) {
-        setError(err.message || "Failed to fetch historical data");
+        setError(err.message || t("chart.fetchHistoricalDataError"));
       } finally {
         setLoading(false);
       }
     };
 
     fetchHistoricalData();
-  }, [node?.uuid, hours, getLoadHistory, isRealtime, isDataEmpty]);
+  }, [node?.uuid, hours, getLoadHistory, isRealtime, isDataEmpty, t]);
 
   // Fetch initial real-time data and handle WebSocket updates
   useEffect(() => {
@@ -52,14 +54,14 @@ export const useLoadCharts = (node: NodeData | null, hours: number) => {
         setRealtimeData(data?.records || []);
         setHistoricalData([]); // Clear historical data
       } catch (err: any) {
-        setError(err.message || "Failed to fetch initial real-time data");
+        setError(err.message || t("chart.fetchInitialRealtimeDataError"));
       } finally {
         setLoading(false);
       }
     };
 
     fetchInitialRealtimeData();
-  }, [node?.uuid, getRecentLoadHistory, isRealtime]);
+  }, [node?.uuid, getRecentLoadHistory, isRealtime, t]);
 
   // Separate effect for WebSocket updates
   useEffect(() => {
