@@ -26,7 +26,11 @@ import {
 import { useAppConfig } from "@/config";
 import { CustomTooltip } from "@/components/ui/tooltip";
 import Tips from "@/components/ui/tips";
-import { generateColor, lableFormatter } from "@/utils/chartHelper";
+import {
+  formatTwoLineTimeLabel,
+  generateColor,
+  lableFormatter,
+} from "@/utils/chartHelper";
 import { useLocale } from "@/config/hooks";
 
 interface PingChartProps {
@@ -306,6 +310,28 @@ const PingChart = memo(({ node, initialHours = 1 }: PingChartProps) => {
     });
   }, [pingHistory?.records, sortedTasks, timeRange]);
 
+  const renderTwoLineTick = ({ x, y, payload }: any) => {
+    const { time, date } = formatTwoLineTimeLabel(payload?.value);
+
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text
+          x={0}
+          y={0}
+          textAnchor="middle"
+          fill="var(--theme-text-muted-color)"
+          fontSize={11}>
+          <tspan x={0} dy="0.4em">
+            {time}
+          </tspan>
+          <tspan x={0} dy="1.2em">
+            {date}
+          </tspan>
+        </text>
+      </g>
+    );
+  };
+
   return (
     <div className="relative space-y-4 h-full flex flex-col min-h-114">
       {loading && (
@@ -483,8 +509,9 @@ const PingChart = memo(({ node, initialHours = 1 }: PingChartProps) => {
                   type="number"
                   dataKey="time"
                   domain={timeRange || ["dataMin", "dataMax"]}
-                  tickFormatter={(time) => lableFormatter(time, hours)}
-                  tick={{ fill: "var(--theme-text-muted-color)" }}
+                  tick={renderTwoLineTick}
+                  tickMargin={8}
+                  height={42}
                   axisLine={{
                     stroke: "var(--theme-line-muted-color)",
                   }}

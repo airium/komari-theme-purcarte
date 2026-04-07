@@ -1,6 +1,15 @@
 import type { PingTask } from "@/types/node";
 import { formatIsoMonthDayTime, formatIsoTime } from "./formatHelper";
 
+const pad2 = (value: number) => String(value).padStart(2, "0");
+
+const parseDate = (value: unknown): Date | null => {
+  if (value === null || value === undefined || value === "") return null;
+
+  const date = value instanceof Date ? value : new Date(value as any);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
 /**
  * 根据任务名称和任务列表生成颜色
  * @param taskName - 任务名称
@@ -62,4 +71,22 @@ export const loadChartTimeFormatter = (
     return formatIsoTime(value, false, "");
   }
   return "";
+};
+
+/**
+ * 将时间戳格式化为双行标签（第一行 HH:MM，第二行 MMDD）
+ */
+export const formatTwoLineTimeLabel = (
+  value: unknown,
+  fallback = "----"
+): { time: string; date: string } => {
+  const date = parseDate(value);
+  if (!date) {
+    return { time: fallback, date: fallback };
+  }
+
+  return {
+    time: `${pad2(date.getHours())}:${pad2(date.getMinutes())}`,
+    date: `${pad2(date.getMonth() + 1)}${pad2(date.getDate())}`,
+  };
 };

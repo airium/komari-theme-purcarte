@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -23,7 +23,7 @@ import { Flex } from "@radix-ui/themes";
 import Loading from "@/components/loading";
 import { useLoadCharts } from "@/hooks/useLoadCharts";
 import { CustomTooltip } from "@/components/ui/tooltip";
-import { lableFormatter, loadChartTimeFormatter } from "@/utils/chartHelper";
+import { formatTwoLineTimeLabel, lableFormatter } from "@/utils/chartHelper";
 import type { RpcNodeStatus } from "@/types/rpc";
 import { useLocale } from "@/config/hooks";
 import { useAppConfig } from "@/config";
@@ -85,9 +85,6 @@ const LoadChartCard = ({
       setHours(timeRanges[0].hours);
     }
   }, [hours, timeRanges]);
-
-  const chartDataLengthRef = useRef(0);
-  chartDataLengthRef.current = chartData.length;
 
   const chartMargin = { top: 8, right: 16, bottom: 8, left: 16 };
 
@@ -288,6 +285,32 @@ const LoadChartCard = ({
         },
       };
 
+  const renderTwoLineTick = ({ x, y, payload, index }: any) => {
+    const dataLength = config.data.length;
+    if (dataLength === 0) return <g />;
+    if (index !== 0 && index !== dataLength - 1) return <g />;
+
+    const { time, date } = formatTwoLineTimeLabel(payload?.value);
+
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text
+          x={0}
+          y={0}
+          textAnchor="middle"
+          fill="var(--theme-text-muted-color)"
+          fontSize={11}>
+          <tspan x={0} dy="0.4em">
+            {time}
+          </tspan>
+          <tspan x={0} dy="1.2em">
+            {date}
+          </tspan>
+        </text>
+      </g>
+    );
+  };
+
   return (
     <Card className="flex flex-col overflow-hidden">
       <CardHeader className="pb-1">
@@ -357,14 +380,9 @@ const LoadChartCard = ({
                 axisLine={{
                   stroke: "var(--theme-text-muted-color)",
                 }}
-                tick={{
-                  fill: "var(--theme-text-muted-color)",
-                }}
-                tickFormatter={(value, index) =>
-                  loadChartTimeFormatter(value, index, chartDataLengthRef.current)
-                }
+                tick={renderTwoLineTick}
                 interval={0}
-                height={20}
+                height={42}
               />
               <YAxis
                 tickLine={false}
